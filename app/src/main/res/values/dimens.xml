@@ -16,7 +16,9 @@
     <dimen name="spacing_26dp">26dp</dimen>
     <dimen name="spacing_28dp">28dp</dimen>
     <dimen name="spacing_30dp">30dp</dimen>
-    
+    <dimen name="spacing_150dp">150dp</dimen>
+    <dimen name="spacing_200dp">200dp</dimen>
+
 <!--    TEXTING-->
     <dimen name="text_2sp">2sp</dimen>
     <dimen name="text_4sp">4sp</dimen>
