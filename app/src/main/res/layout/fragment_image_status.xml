@@ -6,12 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ImageStatusFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_image"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_status_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/spacing_8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3" />
+        app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/light_green">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/spacing_8dp"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="No Status is Available"
+        android:textSize="@dimen/text_20sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
 
 </FrameLayout>
