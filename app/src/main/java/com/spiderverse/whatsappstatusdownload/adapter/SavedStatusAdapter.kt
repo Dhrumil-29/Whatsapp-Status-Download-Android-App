@@ -15,16 +15,16 @@ import com.spiderverse.whatsappstatusdownload.FullScreenActivity
 import com.spiderverse.whatsappstatusdownload.R
 import com.spiderverse.whatsappstatusdownload.databinding.RowImageVideoStatusBinding
 import com.spiderverse.whatsappstatusdownload.model.StatusModel
-import kotlin.concurrent.fixedRateTimer
 
 class SavedStatusAdapter(private val context: Context, val list: List<StatusModel>) :
     RecyclerView.Adapter<SavedStatusAdapter.ImageViewHolder>() {
 
     inner class ImageViewHolder(binding: RowImageVideoStatusBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val statusPreview: ImageView = binding.imageStatus
+        val statusPreview: ImageView = binding.statusPreviewImage
         val downloadImage: Button = binding.btnDownload
         val constraint : ConstraintLayout = binding.constraint
+        val videoPlayButton : ImageView = binding.ivVideoPlay
     }
 
     override fun onCreateViewHolder(
@@ -35,25 +35,27 @@ class SavedStatusAdapter(private val context: Context, val list: List<StatusMode
     }
 
     override fun onBindViewHolder(holder: SavedStatusAdapter.ImageViewHolder, position: Int) {
-        val imageData = list[position]
+        val savedStatusData = list[position]
+
+        if(savedStatusData.isVideo)
+            holder.videoPlayButton.visibility = View.VISIBLE
+        else
+            holder.videoPlayButton.visibility = View.GONE
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(holder.constraint)
-        constraintSet.constrainMaxHeight(R.id.image_status,context.resources.getDimensionPixelSize(R.dimen.spacing_200dp))
-        constraintSet.constrainMinHeight(R.id.image_status,context.resources.getDimensionPixelSize(R.dimen.spacing_200dp))
+        constraintSet.constrainMaxHeight(R.id.status_preview_image,context.resources.getDimensionPixelSize(R.dimen.spacing_200dp))
+        constraintSet.constrainMinHeight(R.id.status_preview_image,context.resources.getDimensionPixelSize(R.dimen.spacing_200dp))
         constraintSet.applyTo(holder.constraint)
 
-//        holder.statusPreview. = context.resources.getDimensionPixelSize(R.dimen.spacing_450dp)
-//        holder.statusPreview.maxHeight = context.resources.getDimensionPixelSize(R.dimen.spacing_450dp)
-
-        Glide.with(context).load(imageData.documentFile!!.uri)
+        Glide.with(context).load(savedStatusData.documentFile!!.uri)
             .placeholder(R.drawable.image_placeholder).into(holder.statusPreview)
 
         holder.statusPreview.setOnClickListener {
             val intent = Intent(context, FullScreenActivity::class.java)
             //we can pass information like the DocumentFile's URI and MIME type in the intent and re-create the DocumentFile when needed.
-            intent.putExtra("documentUri", imageData.documentFile!!.uri.toString())
-            intent.putExtra("mimeType", imageData.documentFile!!.type)
+            intent.putExtra("documentUri", savedStatusData.documentFile!!.uri.toString())
+            intent.putExtra("mimeType", savedStatusData.documentFile!!.type)
             context.startActivity(intent)
         }
 

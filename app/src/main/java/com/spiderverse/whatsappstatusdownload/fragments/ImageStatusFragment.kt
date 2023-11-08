@@ -2,22 +2,17 @@ package com.spiderverse.whatsappstatusdownload.fragments
 
 import android.app.Activity
 import android.content.UriPermission
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import com.spiderverse.whatsappstatusdownload.adapter.ImageStatusAdapter
 import com.spiderverse.whatsappstatusdownload.databinding.FragmentImageStatusBinding
 import com.spiderverse.whatsappstatusdownload.model.StatusModel
-import com.spiderverse.whatsappstatusdownload.utils.Utils
-import java.util.Arrays
 import java.util.concurrent.Executors
 
 class ImageStatusFragment : Fragment() {
@@ -105,7 +100,7 @@ class ImageStatusFragment : Fragment() {
 
     private fun fetchFromAboveAndroid10() {
         Executors.newSingleThreadExecutor().execute {
-            val mainHandler: Handler = Handler(Looper.getMainLooper())
+            val mainHandler = Handler(Looper.getMainLooper())
 
             val list: List<UriPermission> =
                 requireActivity().contentResolver.persistedUriPermissions

@@ -3,6 +3,7 @@ package com.spiderverse.whatsappstatusdownload.adapter
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
@@ -15,40 +16,42 @@ import com.spiderverse.whatsappstatusdownload.databinding.RowImageVideoStatusBin
 import com.spiderverse.whatsappstatusdownload.model.StatusModel
 import com.spiderverse.whatsappstatusdownload.utils.FileUtils
 
-class ImageStatusAdapter(private val context: Context, val list: List<StatusModel>) :
-    RecyclerView.Adapter<ImageStatusAdapter.ImageViewHolder>() {
+class VideoStatusAdapter(private val context: Context, val list: List<StatusModel>) :
+    RecyclerView.Adapter<VideoStatusAdapter.VideoViewHolder>() {
 
-    inner class ImageViewHolder(binding: RowImageVideoStatusBinding) :
+    inner class VideoViewHolder(binding: RowImageVideoStatusBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val statusImage: ImageView = binding.statusPreviewImage
-        val downloadImage: Button = binding.btnDownload
+        val statusPreviewImage: ImageView = binding.statusPreviewImage
+        val downloadVideo: Button = binding.btnDownload
+        val videoPlayButton : ImageView = binding.ivVideoPlay
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
-    ): ImageStatusAdapter.ImageViewHolder {
+    ): VideoStatusAdapter.VideoViewHolder {
         val binding = RowImageVideoStatusBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ImageViewHolder(binding)
+        return VideoViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ImageStatusAdapter.ImageViewHolder, position: Int) {
-        val imageData = list[position]
+    override fun onBindViewHolder(holder: VideoStatusAdapter.VideoViewHolder, position: Int) {
+        val videoData = list[position]
 
-        Glide.with(context).load(imageData.documentFile!!.uri)
-            .placeholder(R.drawable.image_placeholder).into(holder.statusImage)
+        holder.videoPlayButton.visibility = View.VISIBLE
 
-        holder.statusImage.setOnClickListener {
+        Glide.with(context).load(videoData.documentFile!!.uri)
+            .placeholder(R.drawable.image_placeholder).into(holder.statusPreviewImage)
+
+        holder.statusPreviewImage.setOnClickListener {
             val intent = Intent(context, FullScreenActivity::class.java)
             //we can pass information like the DocumentFile's URI and MIME type in the intent and re-create the DocumentFile when needed.
-            intent.putExtra("documentUri", imageData.documentFile!!.uri.toString())
-            intent.putExtra("mimeType", imageData.documentFile!!.type)
+            intent.putExtra("documentUri", videoData.documentFile!!.uri.toString())
+            intent.putExtra("mimeType", videoData.documentFile!!.type)
             context.startActivity(intent)
         }
 
-        holder.downloadImage.setOnClickListener {
-//            FileUtils.copyFile(imageData,context)
-            if (FileUtils.copyImageToSaverFolder(
-                    context, contentResolver = context.contentResolver, imageData.documentFile!!.uri
+        holder.downloadVideo.setOnClickListener {
+            if (FileUtils.copyVideoToSaverFolder(
+                    context, contentResolver = context.contentResolver, videoData.documentFile!!.uri
                 )
             ) Toast.makeText(context, "File Saved...", Toast.LENGTH_SHORT).show()
             else Toast.makeText(context, "Something went wrong...", Toast.LENGTH_SHORT).show()

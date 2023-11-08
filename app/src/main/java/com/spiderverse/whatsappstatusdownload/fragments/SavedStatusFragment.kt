@@ -16,7 +16,6 @@ import com.spiderverse.whatsappstatusdownload.model.StatusModel
 class SavedStatusFragment : Fragment() {
 
     private lateinit var fragmentBinding: FragmentSavedStatusBinding
-    private lateinit var sourceDocumentFile: DocumentFile
     private val savedStatusList: MutableList<StatusModel> = mutableListOf()
     private var savedStatusAdapter: SavedStatusAdapter? = null
 
@@ -55,17 +54,14 @@ class SavedStatusFragment : Fragment() {
 
     private fun addDataInList() {
 
-        val list: List<UriPermission> =
-            requireActivity().contentResolver.persistedUriPermissions
+        val list: List<UriPermission> = requireActivity().contentResolver.persistedUriPermissions
 
         val file: DocumentFile? = DocumentFile.fromTreeUri(requireActivity(), list[0].uri)
 
         savedStatusList.clear()
 
         if (file == null) {
-//                mainHandler.post {
             showEmptyFileLayout()
-//                }
             return
         }
 

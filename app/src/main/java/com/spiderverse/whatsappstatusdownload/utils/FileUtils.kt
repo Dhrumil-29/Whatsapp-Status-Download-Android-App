@@ -142,6 +142,42 @@ class FileUtils {
             return false // Copying failed
         }
 
+        fun copyVideoToSaverFolder(
+            context: Context, contentResolver: ContentResolver, sourceVideoUri: Uri
+        ): Boolean {
+            // Create a DocumentFile for the source image using the URI
+            val sourceDocumentFile = DocumentFile.fromSingleUri(context, sourceVideoUri)
+
+            // give App Folder DocumentFile
+            val saverFolder = createAppFolder()
+            if (sourceDocumentFile != null && saverFolder != null) {
+                // Create a new DocumentFile in the "Saver" folder with the desired file name and MIME type
+                val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                val currentDate = sdf.format(Date())
+
+                val desiredFileName = "VID_${currentDate}"
+                val destinationFile = saverFolder.createFile("video/mp4", desiredFileName)
+                if (destinationFile != null) {
+                    // Copy the content from the source DocumentFile to the destination DocumentFile
+                    try {
+                        val inputStream = contentResolver.openInputStream(sourceDocumentFile.uri)
+                        val outputStream = contentResolver.openOutputStream(destinationFile.uri)
+                        val buffer = ByteArray(4096)
+                        var bytesRead: Int
+                        while (inputStream!!.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream!!.write(buffer, 0, bytesRead)
+                        }
+                        inputStream.close()
+                        outputStream!!.close()
+                        return true // Copying succeeded
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            return false // Copying failed
+        }
+
         private fun getOrCreateFolder(parentFolder: DocumentFile?, folderName: String?): DocumentFile? {
             // Check if the folder exists, and create it if not
             var folder = parentFolder!!.findFile(folderName!!)

@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image_status"
+            android:id="@+id/status_preview_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -25,6 +25,19 @@
             app:layout_constraintHeight_min="@dimen/spacing_100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_video_play"
+            android:layout_width="@dimen/spacing_50dp"
+            android:layout_height="@dimen/spacing_50dp"
+            android:background="@drawable/icon_round_background"
+            android:src="@drawable/ic_play"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/status_preview_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/status_preview_image"
+            app:tint="@color/white" />
 
         <Button
             android:id="@+id/btn_download"
