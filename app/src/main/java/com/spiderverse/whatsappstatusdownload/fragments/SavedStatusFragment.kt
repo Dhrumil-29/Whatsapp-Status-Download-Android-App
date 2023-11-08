@@ -3,14 +3,11 @@ package com.spiderverse.whatsappstatusdownload.fragments
 import android.content.UriPermission
 import android.os.Bundle
 import android.os.Environment
-import android.provider.DocumentsContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
-import com.spiderverse.whatsappstatusdownload.adapter.ImageStatusAdapter
 import com.spiderverse.whatsappstatusdownload.adapter.SavedStatusAdapter
 import com.spiderverse.whatsappstatusdownload.databinding.FragmentSavedStatusBinding
 import com.spiderverse.whatsappstatusdownload.model.StatusModel

@@ -19,6 +19,8 @@
     <dimen name="spacing_100dp">100dp</dimen>
     <dimen name="spacing_150dp">150dp</dimen>
     <dimen name="spacing_200dp">200dp</dimen>
+    <dimen name="spacing_250dp">250dp</dimen>
+    <dimen name="spacing_450dp">450dp</dimen>
 
 <!--    TEXTING-->
     <dimen name="text_2sp">2sp</dimen>
