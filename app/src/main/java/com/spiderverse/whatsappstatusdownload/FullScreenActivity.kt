@@ -1,18 +1,15 @@
 package com.spiderverse.whatsappstatusdownload
 
-import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.View
-import com.google.gson.Gson
+import android.widget.MediaController
+import androidx.documentfile.provider.DocumentFile
 import com.spiderverse.whatsappstatusdownload.databinding.ActivityFullScreenBinding
-import com.spiderverse.whatsappstatusdownload.model.StatusModel
 
 class FullScreenActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityFullScreenBinding
+    private lateinit var binding: ActivityFullScreenBinding
 //    private lateinit var imageData : StatusModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +17,31 @@ class FullScreenActivity : AppCompatActivity() {
         binding = ActivityFullScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        val imageDataJson = intent.getStringExtra("DATA")
-//
-//        if(imageDataJson != null){
-//            imageData = Gson().fromJson(imageDataJson,StatusModel::class.java)
-//            imageData = intent.getStringExtra("DATA") as StatusModel
-//        }
-
         val documentUriString = intent.getStringExtra("documentUri")
         val mimeType = intent.getStringExtra("mimeType")
 
-        val imageUri = Uri.parse(documentUriString)
+        val statusUri = Uri.parse(documentUriString)
 
-        binding.touchImageView.setImageURI(imageUri)
+        val statusDocument = DocumentFile.fromSingleUri(this, statusUri)
+
+        if (statusDocument!!.name!!.endsWith(".mp4", ignoreCase = true)) {
+            // Video
+            binding.videoStatusView.visibility = View.VISIBLE
+            binding.touchImageView.visibility = View.GONE
+
+            val mediaController = MediaController(this)
+            binding.videoStatusView.setVideoURI(statusUri)
+            binding.videoStatusView.requestFocus()
+            binding.videoStatusView.setMediaController(mediaController)
+            mediaController.setAnchorView(binding.videoStatusView)
+            binding.videoStatusView.start()
+
+        } else {
+            // Image
+            binding.videoStatusView.visibility = View.GONE
+            binding.touchImageView.visibility = View.VISIBLE
+            binding.touchImageView.setImageURI(statusUri)
+        }
     }
 
 }
