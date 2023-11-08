@@ -3,43 +3,40 @@ package com.spiderverse.whatsappstatusdownload.adapter
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spiderverse.whatsappstatusdownload.FullScreenActivity
 import com.spiderverse.whatsappstatusdownload.R
 import com.spiderverse.whatsappstatusdownload.databinding.RowImageVideoStatusBinding
 import com.spiderverse.whatsappstatusdownload.model.StatusModel
-import com.spiderverse.whatsappstatusdownload.utils.FileUtils
 
-class ImageStatusAdapter(private val context: Context, val list: List<StatusModel>) :
-    RecyclerView.Adapter<ImageStatusAdapter.ImageViewHolder>() {
+class SavedStatusAdapter(private val context: Context, val list: List<StatusModel>) :
+    RecyclerView.Adapter<SavedStatusAdapter.ImageViewHolder>() {
 
-    inner class ImageViewHolder(val binding: RowImageVideoStatusBinding) :
+    inner class ImageViewHolder(binding: RowImageVideoStatusBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val statusImage: ImageView = binding.imageStatus
+        val statusPreview: ImageView = binding.imageStatus
         val downloadImage: Button = binding.btnDownload
     }
 
-//    private val gson = Gson()
-
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
-    ): ImageStatusAdapter.ImageViewHolder {
+    ): SavedStatusAdapter.ImageViewHolder {
         val binding = RowImageVideoStatusBinding.inflate(LayoutInflater.from(context), parent, false)
         return ImageViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ImageStatusAdapter.ImageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SavedStatusAdapter.ImageViewHolder, position: Int) {
         val imageData = list[position]
 
         Glide.with(context).load(imageData.documentFile!!.uri)
-            .placeholder(R.drawable.image_placeholder).into(holder.statusImage)
+            .placeholder(R.drawable.image_placeholder).into(holder.statusPreview)
 
-        holder.statusImage.setOnClickListener {
+        holder.statusPreview.setOnClickListener {
             val intent = Intent(context, FullScreenActivity::class.java)
             //we can pass information like the DocumentFile's URI and MIME type in the intent and re-create the DocumentFile when needed.
             intent.putExtra("documentUri", imageData.documentFile!!.uri.toString())
@@ -47,14 +44,7 @@ class ImageStatusAdapter(private val context: Context, val list: List<StatusMode
             context.startActivity(intent)
         }
 
-        holder.downloadImage.setOnClickListener {
-//            FileUtils.copyFile(imageData,context)
-            if (FileUtils.copyImageToSaverFolder(
-                    context, contentResolver = context.contentResolver, imageData.documentFile!!.uri
-                )
-            ) Toast.makeText(context, "File Saved...", Toast.LENGTH_SHORT).show()
-            else Toast.makeText(context, "Something went wrong...", Toast.LENGTH_SHORT).show()
-        }
+        holder.downloadImage.visibility = View.GONE
     }
 
     override fun getItemCount(): Int {

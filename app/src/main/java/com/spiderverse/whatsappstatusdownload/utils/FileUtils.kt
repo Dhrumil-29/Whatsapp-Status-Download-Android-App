@@ -2,14 +2,9 @@ package com.spiderverse.whatsappstatusdownload.utils
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Environment
-import android.os.storage.StorageManager
-import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
-import com.spiderverse.whatsappstatusdownload.model.StatusModel
-import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -117,15 +112,8 @@ class FileUtils {
             // Create a DocumentFile for the source image using the URI
             val sourceDocumentFile = DocumentFile.fromSingleUri(context, sourceImageUri)
 
-            // Get the external storage directory DocumentFile
-            val externalStorageDocumentFile =
-                DocumentFile.fromFile(Environment.getExternalStorageDirectory())
-
-            // Check if the "Download" folder exists, and create it if not
-            val downloadFolder = getOrCreateFolder(externalStorageDocumentFile, "Download")
-
-            // Check if the "WhatsAppStatusSaver" folder exists inside "Download," and create it if not
-            val saverFolder = getOrCreateFolder(downloadFolder, "WhatsAppStatusSaver")
+            // give App Folder DocumentFile
+            val saverFolder = createAppFolder()
             if (sourceDocumentFile != null && saverFolder != null) {
                 // Create a new DocumentFile in the "Saver" folder with the desired file name and MIME type
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
@@ -154,13 +142,26 @@ class FileUtils {
             return false // Copying failed
         }
 
-        fun getOrCreateFolder(parentFolder: DocumentFile?, folderName: String?): DocumentFile? {
+        private fun getOrCreateFolder(parentFolder: DocumentFile?, folderName: String?): DocumentFile? {
             // Check if the folder exists, and create it if not
             var folder = parentFolder!!.findFile(folderName!!)
             if (folder == null) {
                 folder = parentFolder.createDirectory(folderName)
             }
             return folder
+        }
+
+        fun createAppFolder(): DocumentFile? {
+            // Get the external storage directory DocumentFile
+            val externalStorageDocumentFile =
+                DocumentFile.fromFile(Environment.getExternalStorageDirectory())
+
+            // Check if the "Download" folder exists, and create it if not
+            val downloadFolder = getOrCreateFolder(externalStorageDocumentFile, "Download")
+
+            // Check if the "WhatsAppStatusSaver" folder exists inside "Download," and create it if not
+
+            return getOrCreateFolder(downloadFolder, "WhatsAppStatusSaver")
         }
     }
 }

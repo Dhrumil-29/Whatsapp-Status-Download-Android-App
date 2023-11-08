@@ -41,10 +41,10 @@ class ImageStatusFragment : Fragment() {
     }
 
     private fun initView() {
-        fetchImagesFromStatus();
+        fetchImagesFromStatus()
 
         fragmentBinding.refreshStatusImage.setOnRefreshListener {
-            fetchImagesFromStatus();
+            fetchImagesFromStatus()
             fragmentBinding.refreshStatusImage.isRefreshing = false
         }
     }
@@ -58,7 +58,7 @@ class ImageStatusFragment : Fragment() {
         fetchFromAboveAndroid10()
     }
 
-    private fun fetchFromBelowAndroid11() {
+    /*private fun fetchFromBelowAndroid11() {
         Executors.newSingleThreadExecutor().execute {
             val mainHandler = Handler(Looper.getMainLooper())
             val statusFiles = Utils.WHATSAPP_STATUS_FOLDER_PATH.listFiles()
@@ -101,7 +101,7 @@ class ImageStatusFragment : Fragment() {
 //            }
             fragmentBinding.refreshStatusImage.isRefreshing = false
         }
-    }
+    }*/
 
     private fun fetchFromAboveAndroid10() {
         Executors.newSingleThreadExecutor().execute {
@@ -110,7 +110,7 @@ class ImageStatusFragment : Fragment() {
             val list: List<UriPermission> =
                 requireActivity().contentResolver.persistedUriPermissions
 
-            val file: DocumentFile? = DocumentFile.fromTreeUri(requireActivity(), list[0].uri)
+            val file: DocumentFile? = DocumentFile.fromTreeUri(requireActivity(), list[1].uri)
 
             imageList.clear()
 

@@ -15,10 +15,10 @@ import android.os.storage.StorageManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.spiderverse.whatsappstatusdownload.databinding.ActivitySplashBinding
+import com.spiderverse.whatsappstatusdownload.utils.FileUtils
 import com.spiderverse.whatsappstatusdownload.utils.Utils.Companion.REQUEST_CODE
 import java.util.Objects
 
@@ -62,6 +62,24 @@ class SplashActivity : AppCompatActivity() {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
 
+                requestPermissionForAppFolder()
+//                Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
+//                goToMainScreen()
+            }
+        }
+    }
+
+    val activityResultLauncherForAppFolder: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (result.data != null) {
+                val data: Intent = result.data!!
+                applicationContext.contentResolver.takePersistableUriPermission(
+                    data.data!!,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+
                 Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
                 goToMainScreen()
             }
@@ -90,6 +108,33 @@ class SplashActivity : AppCompatActivity() {
         activityResultLauncher.launch(intent)
     }
 
+    private fun requestPermissionForAppFolder() {
+        if(FileUtils.createAppFolder() == null) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val sm: StorageManager =
+            applicationContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+
+        val intent: Intent = sm.primaryStorageVolume.createOpenDocumentTreeIntent()
+        val startDir: String = "Download%2FWhatsAppStatusSaver"
+        var uri: Uri? = intent.getParcelableExtra("android.provider.extra.INITIAL_URI")
+
+//        This line retrieves the initial URI from the intent, which is typically the root directory of the storage volume.
+        var scheme: String = uri.toString()
+        scheme = scheme.replace("/root/", "/document/")
+        scheme += "%3A$startDir"
+
+        uri = Uri.parse(scheme)
+
+        intent.putExtra("android.provider.extra.INITIAL_URI", uri)
+        intent.flags =
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+
+        activityResultLauncherForAppFolder.launch(intent)
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
@@ -115,19 +160,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionDenied(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return contentResolver.persistedUriPermissions.isEmpty()
-        else {
-            for (permissions in PERMISSIONS) {
-                if (ActivityCompat.checkSelfPermission(
-                        applicationContext, permissions
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return true
-                }
-            }
-        }
-
-        return false
+        return contentResolver.persistedUriPermissions.isEmpty()
     }
 
 }

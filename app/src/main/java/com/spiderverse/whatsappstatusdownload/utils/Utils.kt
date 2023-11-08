@@ -21,6 +21,7 @@ class Utils {
         val REQUEST_CODE: Int = 1234
         var APP_DIR: String? = null
         val APP_FILE_PATH: String = "${Environment.getExternalStorageDirectory().path}${File.separator}/Download/WhatsAppStatusSaver"
+        val RELATIVE_APP_FILE_PATH: String = "/Download/WhatsAppStatusSaver"
 
         /*fun createFileFolder(): Boolean {
             Log.d("TEST : ", "Folder Check")
